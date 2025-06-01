@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { Button } from '@/components/ui/button'
-import { Send } from 'lucide-react'
+import { Send, ArrowLeft } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -21,6 +21,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string>('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   // Generate or load session ID
   useEffect(() => {
@@ -122,14 +123,28 @@ const Chat = () => {
     "How can I manage stress effectively?"
   ]
 
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow">
         <section className="py-4 sm:py-8 bg-white">
-          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="section-container px-4 sm:px-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-              <h1 className="text-2xl sm:text-3xl font-bold">Chat with MediHelp AI</h1>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={handleBackClick}
+                  className="hover:bg-gray-100"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <h1 className="text-2xl sm:text-3xl font-bold">Chat with MediHelp</h1>
+              </div>
+              
               {messages.length > 0 && (
                 <Button
                   onClick={clearChat}

@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 195 33% 99%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -15,16 +15,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 196 84% 57%;
+    --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 195 33% 95%;
+    --secondary: 214 32% 91%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 214 32% 91%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 196 84% 95%;
+    --accent: 214 32% 91%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -32,9 +32,9 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 196 84% 57%;
+    --ring: 217 91% 60%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -82,23 +82,23 @@
   }
   
   .section-title {
-    @apply text-3xl md:text-4xl font-bold mb-4 text-center;
+    @apply text-3xl md:text-4xl font-bold mb-4 text-neutral-900;
   }
   
   .section-subtitle {
-    @apply text-lg md:text-xl text-muted-foreground mb-12 text-center max-w-3xl mx-auto;
+    @apply text-lg md:text-xl text-neutral-600 mb-12 max-w-3xl;
   }
   
   .card-shadow {
-    @apply shadow-soft rounded-2xl bg-white;
+    @apply shadow-lg rounded-xl bg-white border border-neutral-200/50;
   }
   
   .btn-primary {
-    @apply bg-medical hover:bg-medical-dark text-white rounded-full px-6 py-3 font-medium transition duration-200;
+    @apply bg-medical-500 hover:bg-medical-600 text-white rounded-lg px-6 py-3 font-medium transition-all duration-200 shadow-sm hover:shadow-md;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-gray-100 text-medical border border-medical rounded-full px-6 py-3 font-medium transition duration-200;
+    @apply bg-white hover:bg-gray-50 text-medical-600 border border-medical-200 rounded-lg px-6 py-3 font-medium transition-all duration-200 shadow-sm hover:shadow-md;
   }
   
   .animate-hover {
@@ -110,15 +110,23 @@
   }
   
   .chat-bubble-user {
-    @apply chat-bubble bg-medical-light self-end;
+    @apply chat-bubble bg-medical-500 text-white;
   }
   
   .chat-bubble-bot {
-    @apply chat-bubble bg-white border border-gray-100 self-start;
+    @apply chat-bubble bg-neutral-50 border border-neutral-200 text-neutral-800;
   }
 }
 
 @layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-medical-600 to-medical-500;
+  }
+
+  .section-spacing {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
   .container-padding {
     @apply px-4 sm:px-6 lg:px-8;
   }
@@ -174,6 +182,30 @@
   }
   
   .hover-lift {
-    @apply transition-base hover:-translate-y-1 hover:shadow-lg;
+    @apply transition-all hover:-translate-y-1 hover:shadow-lg;
   }
+
+  .nav-link {
+    @apply text-neutral-600 hover:text-medical-500 transition-colors duration-200 font-medium;
+  }
+
+  .nav-link-active {
+    @apply text-medical-500 font-semibold;
+  }
+}
+
+@layer base {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Add gradient backgrounds */
+.bg-gradient-primary {
+  @apply bg-gradient-to-r from-medical-600 to-medical-500;
+}
+
+.bg-gradient-light {
+  @apply bg-gradient-to-b from-medical-light via-white to-white;
 }

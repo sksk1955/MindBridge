@@ -1,6 +1,33 @@
 import type { Config } from "tailwindcss";
 import tailwindAnimate from "tailwindcss-animate";
 
+const colors = {
+	medical: {
+		DEFAULT: '#2563EB', // Rich blue
+		light: '#EFF6FF', // Light blue bg
+		dark: '#1E40AF', // Dark blue
+		100: '#DBEAFE',
+		200: '#BFDBFE',
+		300: '#93C5FD',
+		400: '#60A5FA',
+		500: '#2563EB', // Primary
+		600: '#1E40AF',
+		700: '#1E3A8A',
+	},
+	neutral: {
+		50: '#F8FAFC',
+		100: '#F1F5F9',
+		200: '#E2E8F0',
+		300: '#CBD5E1',
+		400: '#94A3B8',
+		500: '#64748B',
+		600: '#475569',
+		700: '#334155',
+		800: '#1E293B',
+		900: '#0F172A',
+	}
+}
+
 export default {
 	darkMode: ["class"],
 	content: [
@@ -63,11 +90,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				medical: {
-					DEFAULT: '#33C3F0',
-					light: '#D3E4FD',
-					dark: '#1EAEDB'
-				}
+				...colors
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
