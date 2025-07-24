@@ -23,9 +23,12 @@ const ChatPreview = () => {
   };
 
   const exampleQuestions = [
-    "What are common symptoms of diabetes?",
+    "How can I manage stress and anxiety?",
+    "What are some good self-care practices?",
     "How can I improve my sleep quality?",
-    "What are the signs of high blood pressure?"
+    "What are mindfulness techniques?",
+    "How can I build better mental health habits?",
+    "What should I do if I'm feeling overwhelmed?"
   ];
 
   return (

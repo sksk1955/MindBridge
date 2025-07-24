@@ -17,16 +17,16 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="min-h-[90vh] flex items-center bg-gradient-to-b from-medical-light/30 to-white">
+    <section className="min-h-[90vh] flex items-center bg-gradient-to-b from-indigo-50 to-white">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-center lg:text-left">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
               Your Personal<br />
-              <span className="text-medical">Health Assistant</span>
+              <span className="text-indigo-600">Mental Health Assistant</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-xl mx-auto lg:mx-0">
-              Get instant, reliable medical information powered by advanced AI technology.
+              Get supportive guidance and mental wellness information from our empathetic AI assistant.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button onClick={handleChatNowClick} size="lg" className="btn-primary">
