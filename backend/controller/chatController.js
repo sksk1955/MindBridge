@@ -90,91 +90,80 @@ You matter, and there are people who want to help you through this difficult tim
 Is there someone you trust who you can talk to right now?`;
 };
 
-// Add this debug version to your chatController.js
+// Replace your handleSubmit function in Chat.tsx with this JavaScript version:
 
-// Chat response controller
-export const getChatResponse = async (req, res) => {
-  try {
-    console.log('=== Chat Request Received ===');
-    console.log('Request body:', req.body);
-    console.log('GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY);
-    
-    const { message, sessionId = 'default' } = req.body;
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  if (!inputValue.trim() || isLoading) return
 
-    if (!message) {
-      console.log('Error: No message provided');
-      return res.status(400).json({
-        success: false,
-        message: 'Message is required'
-      });
-    }
-
-    console.log('Processing message:', message);
-    console.log('Session ID:', sessionId);
-
-    // Check for crisis situations first
-    if (checkForCrisisKeywords(message)) {
-      console.log('Crisis keywords detected');
-      const crisisResponse = getCrisisResponse();
-      updateConversationContext(sessionId, message, crisisResponse);
-      
-      return res.json({
-        success: true,
-        data: crisisResponse
-      });
-    }
-
-    // Get conversation history
-    const history = getConversationContext(sessionId);
-    const historyText = history.map(msg => 
-      `${msg.role}: ${msg.content}`
-    ).join('\n');
-
-    console.log('Conversation history length:', history.length);
-
-    // Get relevant context from documents
-    console.log('Getting relevant context...');
-    const context = await getRelevantContext(message);
-    console.log('Context retrieved, length:', context?.length || 0);
-
-    // Create the full prompt
-    const fullPrompt = PROMPT_TEMPLATE
-      .replace('{context}', context || 'No specific relevant information found.')
-      .replace('{history}', historyText || 'No previous conversation.')
-      .replace('{question}', message);
-
-    console.log('Sending request to Gemini...');
-
-    // Generate response using Gemini
-    const result = await model.generateContent(fullPrompt);
-    const response = result.response;
-    const responseText = response.text();
-
-    console.log('Gemini response received, length:', responseText?.length || 0);
-
-    // Update conversation history
-    updateConversationContext(sessionId, message, responseText);
-
-    console.log('=== Sending Response ===');
-    return res.json({
-      success: true,
-      data: responseText
-    });
-
-  } catch (error) {
-    console.error('=== ERROR in getChatResponse ===');
-    console.error('Error details:', error);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    
-    // Provide a fallback response
-    const fallbackResponse = "I apologize, but I'm having trouble processing your request right now. For immediate mental health support, please consider contacting a mental health professional or crisis helpline. Is there anything specific about mental wellness I can help you with?";
-    
-    return res.status(500).json({
-      success: false,
-      message: 'Error processing request',
-      data: fallbackResponse,
-      error: error.message
-    });
+  const userMessage = inputValue.trim()
+  setInputValue('')
+  
+  const newUserMessage = {
+    role: 'user',
+    content: userMessage,
+    timestamp: Date.now()
   }
-};
+  
+  console.log('Adding user message:', newUserMessage)
+  setMessages(prev => {
+    const updated = [...prev, newUserMessage]
+    console.log('Updated messages after user:', updated)
+    return updated
+  })
+  setIsLoading(true)
+
+  try {
+    // Debug the API URL
+    const apiUrl = import.meta.env.VITE_API_URL;
+    console.log('=== CHAT DEBUG ===');
+    console.log('API URL from env:', apiUrl);
+    console.log('Full request URL:', `${apiUrl}/api/chat`);
+    console.log('Request payload:', {
+      message: userMessage,
+      sessionId: sessionId
+    });
+
+    const response = await axios.post(`${apiUrl}/api/chat`, {
+      message: userMessage,
+      sessionId: sessionId
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log('=== RESPONSE RECEIVED ===');
+    console.log('Response status:', response.status);
+    console.log('Response data:', response.data);
+
+    if (response.data.success) {
+      const newAssistantMessage = {
+        role: 'assistant',
+        content: response.data.data,
+        timestamp: Date.now()
+      }
+      console.log('Adding assistant message:', newAssistantMessage)
+      setMessages(prev => {
+        const updated = [...prev, newAssistantMessage]
+        console.log('Updated messages after assistant:', updated)
+        return updated
+      })
+    }
+  } catch (error) {
+    console.error('=== CHAT ERROR ===');
+    console.error('Error object:', error);
+    console.error('Error message:', error.message);
+    console.error('Error response:', error.response?.data);
+    console.error('Error status:', error.response?.status);
+    
+    const errorMessage = {
+      role: 'assistant',
+      content: 'Sorry, I encountered an error. Please try again.',
+      timestamp: Date.now()
+    }
+    setMessages(prev => [...prev, errorMessage])
+  } finally {
+    setIsLoading(false)
+  }
+}
