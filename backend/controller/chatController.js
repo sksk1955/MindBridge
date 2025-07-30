@@ -90,20 +90,31 @@ You matter, and there are people who want to help you through this difficult tim
 Is there someone you trust who you can talk to right now?`;
 };
 
+// Add this debug version to your chatController.js
+
 // Chat response controller
 export const getChatResponse = async (req, res) => {
   try {
+    console.log('=== Chat Request Received ===');
+    console.log('Request body:', req.body);
+    console.log('GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY);
+    
     const { message, sessionId = 'default' } = req.body;
 
     if (!message) {
+      console.log('Error: No message provided');
       return res.status(400).json({
         success: false,
         message: 'Message is required'
       });
     }
 
+    console.log('Processing message:', message);
+    console.log('Session ID:', sessionId);
+
     // Check for crisis situations first
     if (checkForCrisisKeywords(message)) {
+      console.log('Crisis keywords detected');
       const crisisResponse = getCrisisResponse();
       updateConversationContext(sessionId, message, crisisResponse);
       
@@ -119,8 +130,12 @@ export const getChatResponse = async (req, res) => {
       `${msg.role}: ${msg.content}`
     ).join('\n');
 
+    console.log('Conversation history length:', history.length);
+
     // Get relevant context from documents
+    console.log('Getting relevant context...');
     const context = await getRelevantContext(message);
+    console.log('Context retrieved, length:', context?.length || 0);
 
     // Create the full prompt
     const fullPrompt = PROMPT_TEMPLATE
@@ -128,21 +143,29 @@ export const getChatResponse = async (req, res) => {
       .replace('{history}', historyText || 'No previous conversation.')
       .replace('{question}', message);
 
+    console.log('Sending request to Gemini...');
+
     // Generate response using Gemini
     const result = await model.generateContent(fullPrompt);
     const response = result.response;
     const responseText = response.text();
 
+    console.log('Gemini response received, length:', responseText?.length || 0);
+
     // Update conversation history
     updateConversationContext(sessionId, message, responseText);
 
+    console.log('=== Sending Response ===');
     return res.json({
       success: true,
       data: responseText
     });
 
   } catch (error) {
-    console.error('Error in getChatResponse:', error);
+    console.error('=== ERROR in getChatResponse ===');
+    console.error('Error details:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     
     // Provide a fallback response
     const fallbackResponse = "I apologize, but I'm having trouble processing your request right now. For immediate mental health support, please consider contacting a mental health professional or crisis helpline. Is there anything specific about mental wellness I can help you with?";

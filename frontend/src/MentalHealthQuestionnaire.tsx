@@ -140,47 +140,52 @@ export default function MentalHealthQuestionnaire({ onClose }: MentalHealthQuest
     setError("");
   };
 
-  const handleSubmit = async () => {
-    const currentValue = form[questions[step].key];
-    if (isFieldEmpty(currentValue)) {
-      setError("Please answer all questions before submitting.");
-      return;
-    }
+  // Replace the handleSubmit function in your MentalHealthQuestionnaire.tsx with this:
 
-    setLoading(true);
-    setError("");
+const handleSubmit = async () => {
+  const currentValue = form[questions[step].key];
+  if (isFieldEmpty(currentValue)) {
+    setError("Please answer all questions before submitting.");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+  
+  try {
+    console.log("Submitting form data:", form);
     
-    try {
-      console.log("Submitting form data:", form);
-      
-      const response = await fetch("http://localhost:5000/api/predict", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(form)
-      });
+    // Use environment variable for ML API URL
+    const apiUrl = import.meta.env.VITE_ML_API_URL || "https://mental-health-ml-api-ki88.onrender.com";
+    
+    const response = await fetch(`${apiUrl}/api/predict`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(form)
+    });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result: Result = await response.json();
-      console.log("Received result:", result);
-      
-      if (result.status === 'error') {
-        throw new Error(result.error);
-      }
-      
-      setResult(result);
-    } catch (error) {
-      console.error("Error:", error);
-      setError(`Failed to calculate score: ${(error as Error).message}`);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+
+    const result: Result = await response.json();
+    console.log("Received result:", result);
+    
+    if (result.status === 'error') {
+      throw new Error(result.error);
+    }
+    
+    setResult(result);
+  } catch (error) {
+    console.error("Error:", error);
+    setError(`Failed to calculate score: ${(error as Error).message}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getRiskLevel = (score: number) => {
     if (score >= 70) return { level: "HIGH", color: "text-red-600", bg: "bg-red-100" };
