@@ -1,25 +1,36 @@
-// Add these updates to your existing server.js
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
-// Update CORS configuration
-const cors = require('cors');
+dotenv.config();
 
+const app = express();
+
+// CORS configuration
 const corsOptions = {
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://your-app-frontend.onrender.com', // Replace with your actual frontend URL
-    // Add your frontend domain here once deployed
+    'https://mental-health-frontend.onrender.com', // Update with your actual frontend URL
+    process.env.FRONTEND_URL
   ],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
 
-// Your existing middleware and routes...
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'Node.js Backend' });
+});
 
-// Update the server startup at the bottom:
-const PORT = process.env.PORT || 3001;
+// Your existing routes - make sure they use ES module imports too
+// import chatRoutes from './routes/chatRoute.js';
+// app.use('/api/chat', chatRoutes);
+
+const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
