@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import chatRouter from './routes/chatRoute.js'; // Import your chat routes
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ const corsOptions = {
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://mental-health-frontend.onrender.com', // Update with your actual frontend URL
+    'https://mental-health-frontend-7u5z.onrender.com', // Your actual frontend URL
     process.env.FRONTEND_URL
   ],
   credentials: true,
@@ -26,9 +27,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy', service: 'Node.js Backend' });
 });
 
-// Your existing routes - make sure they use ES module imports too
-// import chatRoutes from './routes/chatRoute.js';
-// app.use('/api/chat', chatRoutes);
+// Register chat routes
+app.use('/api', chatRouter); // This will make your route accessible at /api/chat
 
 const PORT = process.env.PORT || 10000;
 
